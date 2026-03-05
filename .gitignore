@@ -8,3 +8,14 @@ node_modules/
 .next/
 .env*.local
 .DS_Store
+.env
+.env.*
+!.env.example
+.demo-data/
+.demo-test-data/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+next-env.d.ts
+.demo-secret
