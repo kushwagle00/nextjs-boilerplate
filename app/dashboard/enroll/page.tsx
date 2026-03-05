@@ -75,7 +75,13 @@ export default function EnrollPage() {
   })
 
   function updateField(field: keyof FormData, value: string) {
+    // ensure phone always stays formatted
+    if (field === 'phone') {
+      value = formatPhone(value)
+    }
+
     setForm((prev) => ({ ...prev, [field]: value }))
+
     if (errors[field]) {
       setErrors((prev) => {
         const next = { ...prev }
@@ -245,13 +251,12 @@ export default function EnrollPage() {
                   />
                 )}
                 <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-colors ${
-                    isComplete
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-colors ${isComplete
                       ? 'bg-primary text-primary-foreground'
                       : isActive
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-muted-foreground'
-                  }`}
+                    }`}
                 >
                   {isComplete ? (
                     <CheckCircle2 className="h-4 w-4" />
@@ -266,9 +271,8 @@ export default function EnrollPage() {
                 )}
               </div>
               <span
-                className={`hidden text-[10px] font-medium sm:block ${
-                  isActive ? 'text-primary' : 'text-muted-foreground'
-                }`}
+                className={`hidden text-[10px] font-medium sm:block ${isActive ? 'text-primary' : 'text-muted-foreground'
+                  }`}
               >
                 {s.label}
               </span>
@@ -456,20 +460,18 @@ export default function EnrollPage() {
                     key={plan.id}
                     type="button"
                     onClick={() => updateField('subscriptionPlan', plan.id)}
-                    className={`flex flex-col gap-2 rounded-lg border-2 p-4 text-left transition-colors ${
-                      form.subscriptionPlan === plan.id
+                    className={`flex flex-col gap-2 rounded-lg border-2 p-4 text-left transition-colors ${form.subscriptionPlan === plan.id
                         ? 'border-primary bg-primary/5'
                         : 'border-border hover:border-muted-foreground/30'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-semibold text-foreground">{plan.name}</span>
                       <div
-                        className={`h-4 w-4 rounded-full border-2 ${
-                          form.subscriptionPlan === plan.id
+                        className={`h-4 w-4 rounded-full border-2 ${form.subscriptionPlan === plan.id
                             ? 'border-primary bg-primary'
                             : 'border-muted-foreground/30'
-                        }`}
+                          }`}
                       >
                         {form.subscriptionPlan === plan.id && (
                           <div className="flex h-full w-full items-center justify-center">
