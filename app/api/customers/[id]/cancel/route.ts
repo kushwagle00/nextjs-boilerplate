@@ -34,7 +34,10 @@ export async function POST(
     // Update customer subscription status
     await sql`
       UPDATE customers
-      SET is_active = false, cancellation_reason = ${reason}, cancelled_at = NOW()
+      SET subscription_status = 'cancelled',
+          cancellation_reason = ${reason},
+          cancelled_by = 'agent',
+          cancelled_at = NOW()
       WHERE id = ${customerId}
     `
 

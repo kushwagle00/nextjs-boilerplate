@@ -36,8 +36,8 @@ export async function POST(req: NextRequest) {
 
     // Insert device
     await sql`
-      INSERT INTO devices (customer_id, device_type, device_name, brand, model, serial_number, color, purchase_date, created_at)
-      VALUES (${customerId}, ${body.deviceType}, ${body.deviceName}, ${body.brand}, ${body.model}, ${body.serialNumber}, ${body.color}, ${body.purchaseDate}, NOW())
+      INSERT INTO devices (customer_id, device_type, device_name, brand, model, serial_number, color, purchased_date)
+      VALUES (${customerId}, ${body.deviceType}, ${body.deviceName}, ${body.brand}, ${body.model}, ${body.serialNumber}, ${body.color}, ${body.purchaseDate})
     `
 
     return NextResponse.json(

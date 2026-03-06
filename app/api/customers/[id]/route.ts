@@ -25,8 +25,8 @@ export async function GET(
       SELECT 
         id, first_name, last_name, email, phone,
         address_line1, address_line2, city, state, zip_code,
-        subscription_plan, card_last_four, card_expiry,
-        is_active, created_at
+        subscription_plan, subscription_price, subscription_status,
+        card_last_four, card_expiry, created_at
       FROM customers
       WHERE id = ${customerId}
     `

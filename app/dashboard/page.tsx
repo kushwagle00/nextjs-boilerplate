@@ -27,7 +27,7 @@ interface Customer {
   city: string
   state: string
   subscription_plan: string
-  is_active: boolean
+  subscription_status: string
   created_at: string
 }
 
@@ -100,7 +100,7 @@ export default function DashboardPage() {
       
       // Update local state
       setCustomers(customers.map(c =>
-        c.id === selectedCustomer.id ? { ...c, is_active: false } : c
+        c.id === selectedCustomer.id ? { ...c, subscription_status: 'cancelled' } : c
       ))
     } catch (err) {
       console.error('[v0] Cancel error:', err)
@@ -217,10 +217,10 @@ export default function DashboardPage() {
                       {planNames[customer.subscription_plan] || customer.subscription_plan}
                     </Badge>
                     <Badge
-                      variant={customer.is_active ? 'default' : 'destructive'}
-                      className={customer.is_active ? 'bg-success text-success-foreground' : ''}
+                      variant={customer.subscription_status === 'active' ? 'default' : 'destructive'}
+                      className={customer.subscription_status === 'active' ? 'bg-success text-success-foreground' : ''}
                     >
-                      {customer.is_active ? 'Active' : 'Cancelled'}
+                      {customer.subscription_status === 'active' ? 'Active' : 'Cancelled'}
                     </Badge>
                   </div>
                 </div>
@@ -241,7 +241,7 @@ export default function DashboardPage() {
                     {new Date(customer.created_at).toLocaleDateString()}
                   </span>
                 </div>
-                {customer.is_active && (
+                {customer.subscription_status === 'active' && (
                   <Button
                     variant="outline"
                     size="sm"

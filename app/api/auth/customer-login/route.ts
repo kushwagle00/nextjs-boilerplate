@@ -33,17 +33,17 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Find customer by email and phone
+    // Find customer by email and phone (phone stored as 10 digits)
     const result = await sql`
-      SELECT id, first_name, last_name, email, phone, subscription_plan, is_active
+      SELECT id, first_name, last_name, email, phone, subscription_plan, subscription_status
       FROM customers
-      WHERE email = ${email.toLowerCase()} AND phone = ${phone}
+      WHERE LOWER(email) = LOWER(${email}) AND phone = ${phoneDigits}
       LIMIT 1
     `
 
     if (!result || result.length === 0) {
       return NextResponse.json(
-        { message: 'No customer found with these credentials' },
+        { errors: { general: 'No account found with these credentials' } },
         { status: 404 }
       )
     }
@@ -51,9 +51,9 @@ export async function POST(req: NextRequest) {
     const customer = result[0]
 
     // Check if subscription is active
-    if (!customer.is_active) {
+    if (customer.subscription_status === 'cancelled') {
       return NextResponse.json(
-        { message: 'Your subscription is not active' },
+        { errors: { general: 'Your subscription has been cancelled' } },
         { status: 403 }
       )
     }

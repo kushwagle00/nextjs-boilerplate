@@ -58,12 +58,12 @@ export async function POST(request: NextRequest) {
         first_name, last_name, email, phone,
         address_line1, address_line2, city, state, zip_code,
         subscription_plan, subscription_price, card_last_four, card_expiry,
-        is_active, subscription_date, plan_type, subscription_status
+        plan_type, subscription_status, payment_status
       ) VALUES (
         ${data.firstName}, ${data.lastName}, ${data.email}, ${phoneClean},
         ${data.addressLine1}, ${data.addressLine2 || ''}, ${data.city}, ${data.state}, ${data.zipCode},
         ${data.subscriptionPlan}, ${planPrice}, ${cardLastFour}, ${data.cardExpiry},
-        true, NOW(), ${data.subscriptionPlan}, 'active'
+        ${data.subscriptionPlan}, 'active', 'active'
       )
       RETURNING id
     `
