@@ -10,8 +10,15 @@ export async function POST(request: NextRequest) {
     const cookieStore = await cookies()
     const sessionCookie = cookieStore.get('agent_session')
 
-    if (!sessionCookie?.value) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // Check for agent session OR API key for Postman/CLI access
+    const authHeader = request.headers.get('authorization')
+    const isApiKeyValid = authHeader?.startsWith('Bearer ') && authHeader.slice(7) === process.env.ENROLLMENT_API_KEY
+
+    if (!sessionCookie?.value && !isApiKeyValid) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Provide agent session cookie or Authorization: Bearer <ENROLLMENT_API_KEY> header' },
+        { status: 401 }
+      )
     }
 
     const body = await request.json()
