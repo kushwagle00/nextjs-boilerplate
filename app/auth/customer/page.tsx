@@ -38,7 +38,7 @@ export default function CustomerAuthPage() {
 
     if (!phone.trim()) {
       newErrors.phone = 'Phone number is required'
-    } else if (!/^\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/.test(phone)) {
+    } else if (phone.replace(/\D/g, '').length !== 10) {
       newErrors.phone = 'Please enter a valid 10-digit phone number'
     }
 
@@ -67,7 +67,7 @@ export default function CustomerAuthPage() {
       }
 
       toast.success('Logged in successfully')
-      router.push(`/customer/devices/${result.customerId}`)
+      router.push('/customer/devices')
     } catch (error) {
       console.error('[v0] Customer auth error:', error)
       setErrors({ general: 'An error occurred. Please try again.' })
@@ -157,8 +157,11 @@ export default function CustomerAuthPage() {
                   placeholder="(555) 123-4567"
                   autoComplete="tel"
                   aria-invalid={!!errors.phone}
-                  aria-describedby={errors.phone ? 'customer-phone-error' : undefined}
+                  aria-describedby={errors.phone ? 'customer-phone-error' : 'customer-phone-hint'}
                 />
+                <p id="customer-phone-hint" className="text-xs text-muted-foreground">
+                  Use the phone number you enrolled with
+                </p>
                 {errors.phone && (
                   <p id="customer-phone-error" className="text-sm text-destructive">{errors.phone}</p>
                 )}

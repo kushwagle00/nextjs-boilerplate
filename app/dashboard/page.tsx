@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -284,55 +283,56 @@ export default function DashboardPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Subscription</AlertDialogTitle>
-            <AlertDialogDescription>
-              {selectedCustomer && (
-                <div className="space-y-4 mt-4">
-                  <p>
-                    Are you sure you want to cancel the subscription for{' '}
-                    <strong>{selectedCustomer.first_name} {selectedCustomer.last_name}</strong>?
-                  </p>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">Reason for cancellation:</label>
-                    <div className="space-y-2">
+            <AlertDialogDescription asChild>
+              <div>
+                {selectedCustomer && (
+                  <div className="flex flex-col gap-4 mt-2">
+                    <p className="text-sm text-muted-foreground">
+                      Are you sure you want to cancel the subscription for{' '}
+                      <strong className="text-foreground">{selectedCustomer.first_name} {selectedCustomer.last_name}</strong>?
+                      This action cannot be undone.
+                    </p>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-sm font-medium text-foreground">Reason for cancellation</span>
                       <button
                         type="button"
                         onClick={() => setCancelReason('customer')}
-                        className={`w-full text-left px-3 py-2 rounded border-2 transition-colors ${
+                        className={`w-full text-left px-3 py-2 rounded-md border-2 transition-colors ${
                           cancelReason === 'customer'
                             ? 'border-primary bg-primary/5'
-                            : 'border-border hover:border-muted-foreground/30'
+                            : 'border-border hover:border-muted-foreground/40'
                         }`}
                       >
-                        <div className="font-medium">Customer Initiated</div>
+                        <div className="text-sm font-medium text-foreground">Customer Initiated</div>
                         <div className="text-xs text-muted-foreground">Customer requested cancellation</div>
                       </button>
                       <button
                         type="button"
                         onClick={() => setCancelReason('agent')}
-                        className={`w-full text-left px-3 py-2 rounded border-2 transition-colors ${
+                        className={`w-full text-left px-3 py-2 rounded-md border-2 transition-colors ${
                           cancelReason === 'agent'
                             ? 'border-primary bg-primary/5'
-                            : 'border-border hover:border-muted-foreground/30'
+                            : 'border-border hover:border-muted-foreground/40'
                         }`}
                       >
-                        <div className="font-medium">Agent Initiated</div>
+                        <div className="text-sm font-medium text-foreground">Agent Initiated</div>
                         <div className="text-xs text-muted-foreground">Agent initiated the cancellation</div>
                       </button>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="flex gap-2 justify-end">
-            <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
-            <AlertDialogAction
+          <div className="flex gap-2 justify-end pt-2">
+            <AlertDialogCancel disabled={canceling}>Keep Subscription</AlertDialogCancel>
+            <Button
+              variant="destructive"
               onClick={handleCancelSubscription}
               disabled={!cancelReason || canceling}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {canceling ? 'Canceling...' : 'Cancel Subscription'}
-            </AlertDialogAction>
+              {canceling ? 'Canceling...' : 'Confirm Cancel'}
+            </Button>
           </div>
         </AlertDialogContent>
       </AlertDialog>

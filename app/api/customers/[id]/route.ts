@@ -6,7 +6,7 @@ const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies()
@@ -16,7 +16,8 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const customerId = parseInt(params.id, 10)
+    const { id } = await params
+    const customerId = parseInt(id, 10)
     if (isNaN(customerId)) {
       return NextResponse.json({ error: 'Invalid customer ID' }, { status: 400 })
     }
@@ -26,7 +27,7 @@ export async function GET(
         id, first_name, last_name, email, phone,
         address_line1, address_line2, city, state, zip_code,
         subscription_plan, subscription_price, subscription_status,
-        card_last_four, card_expiry, created_at
+        plan_sku, card_last_four, card_expiry, created_at
       FROM customers
       WHERE id = ${customerId}
     `

@@ -165,41 +165,18 @@ export default function EnrollPage() {
   }
 
   async function handleSubmit() {
-    console.log('[v0] handleSubmit called')
-    console.log('[v0] Form data:', {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      phone: form.phone,
-      phoneDigits: form.phone.replace(/\D/g, ''),
-      addressLine1: form.addressLine1,
-      city: form.city,
-      state: form.state,
-      zipCode: form.zipCode,
-      subscriptionPlan: form.subscriptionPlan,
-      cardholderName: form.cardholderName,
-      cardNumber: form.cardNumber,
-      cardExpiry: form.cardExpiry,
-      cardCvv: form.cardCvv,
-    })
     setLoading(true)
     setErrors({})
 
     const parsed = enrollmentSchema.safeParse(form)
-    console.log('[v0] Validation success:', parsed.success)
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {}
       parsed.error.issues.forEach((issue) => {
         const field = issue.path[0] as string
-        if (!fieldErrors[field]) {
-          console.log('[v0] Validation error on field', field, ':', issue.message)
-          fieldErrors[field] = issue.message
-        }
+        if (!fieldErrors[field]) fieldErrors[field] = issue.message
       })
-      console.log('[v0] Field errors:', fieldErrors)
       setErrors(fieldErrors)
       setLoading(false)
-      // Go to first step with error
       const errorFields = Object.keys(fieldErrors)
       if (errorFields.some((f) => ['firstName', 'lastName', 'email', 'phone'].includes(f))) setStep(0)
       else if (errorFields.some((f) => ['addressLine1', 'city', 'state', 'zipCode'].includes(f))) setStep(1)
@@ -208,20 +185,16 @@ export default function EnrollPage() {
     }
 
     try {
-      console.log('[v0] Sending enrollment request')
       const res = await fetch('/api/customers/enroll', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
 
-      console.log('[v0] Response status:', res.status)
       const result = await res.json()
-      console.log('[v0] Response data:', result)
 
       if (!res.ok) {
         if (result.errors) {
-          console.log('[v0] Setting errors:', result.errors)
           setErrors(result.errors)
           if (result.errors.cardNumber || result.errors.cardCvv || result.errors.cardExpiry) {
             setStep(2)
@@ -234,11 +207,8 @@ export default function EnrollPage() {
         return
       }
 
-      console.log('[v0] Enrollment successful, redirecting')
-      toast.success('Customer enrolled successfully!')
-      router.push(`/dashboard/customer/${result.customerId}`)
-    } catch (error) {
-      console.error('[v0] Enrollment error:', error)
+      router.push(`/dashboard/customer/${result.customerId}?enrolled=1`)
+    } catch {
       toast.error('An unexpected error occurred. Please try again.')
       setLoading(false)
     }
@@ -562,7 +532,7 @@ export default function EnrollPage() {
                     id="cardNumber"
                     value={form.cardNumber}
                     onChange={(e) => updateField('cardNumber', formatCardNumber(e.target.value))}
-                    placeholder="4242 4242 4242 4242"
+                    placeholder="•••• •••• •••• ••••"
                     className="pl-9"
                     maxLength={19}
                     autoComplete="off"
@@ -614,7 +584,7 @@ export default function EnrollPage() {
               <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-2">
                 <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">
-                  {'For testing: CVV 101 = approved, CVV 010 = declined'}
+                  Your payment information is encrypted and stored securely.
                 </span>
               </div>
             </CardContent>

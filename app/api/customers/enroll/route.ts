@@ -10,8 +10,15 @@ export async function POST(request: NextRequest) {
     const cookieStore = await cookies()
     const sessionCookie = cookieStore.get('agent_session')
 
-    if (!sessionCookie?.value) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // Check for agent session OR API key for Postman/CLI access
+    const authHeader = request.headers.get('authorization')
+    const isApiKeyValid = authHeader?.startsWith('Bearer ') && authHeader.slice(7) === process.env.ENROLLMENT_API_KEY
+
+    if (!sessionCookie?.value && !isApiKeyValid) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Provide agent session cookie or Authorization: Bearer <ENROLLMENT_API_KEY> header' },
+        { status: 401 }
+      )
     }
 
     const body = await request.json()
@@ -47,6 +54,13 @@ export async function POST(request: NextRequest) {
     const cardNumberClean = data.cardNumber.replace(/\s/g, '')
     const cardLastFour = cardNumberClean.slice(-4)
 
+    // Plan SKU mapping
+    const planSkuMap: Record<string, string> = {
+      phone_plan: 'DPPhoneProtect',
+      gadget_phone_plan: 'DPTotalProtect',
+    }
+    const planSku = planSkuMap[data.subscriptionPlan] ?? data.subscriptionPlan
+
     // Get plan price
     const planPrice = data.subscriptionPlan === 'phone_plan' ? 9.99 : 19.99
 
@@ -58,12 +72,12 @@ export async function POST(request: NextRequest) {
         first_name, last_name, email, phone,
         address_line1, address_line2, city, state, zip_code,
         subscription_plan, subscription_price, card_last_four, card_expiry,
-        plan_type, subscription_status, payment_status
+        plan_type, plan_sku, subscription_status, payment_status
       ) VALUES (
         ${data.firstName}, ${data.lastName}, ${data.email}, ${phoneClean},
         ${data.addressLine1}, ${data.addressLine2 || ''}, ${data.city}, ${data.state}, ${data.zipCode},
         ${data.subscriptionPlan}, ${planPrice}, ${cardLastFour}, ${data.cardExpiry},
-        ${data.subscriptionPlan}, 'active', 'active'
+        ${data.subscriptionPlan}, ${planSku}, 'active', 'active'
       )
       RETURNING id
     `
