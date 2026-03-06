@@ -1,24 +1,23 @@
-import { neon } from '@neondatabase/serverless'
-import { cookies } from 'next/headers'
+import { getDb } from '@/lib/db'
+import { getAgentSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
 
-const sql = neon(process.env.DATABASE_URL!)
+const sql = getDb()
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('agent_session')
+    const session = await getAgentSession()
 
-    if (!sessionCookie?.value) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const { id } = await params
-    const customerId = parseInt(id, 10)
-    if (isNaN(customerId)) {
+    const customerId = Number(id)
+    if ((!Number.isSafeInteger(customerId) || customerId < 1)) {
       return NextResponse.json({ error: 'Invalid customer ID' }, { status: 400 })
     }
 
@@ -38,7 +37,7 @@ export async function GET(
 
     return NextResponse.json({ customer: customers[0] })
   } catch (error) {
-    console.error('[v0] Customer fetch error:', error)
+    console.error('[portal] Customer fetch error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch customer' },
       { status: 500 }

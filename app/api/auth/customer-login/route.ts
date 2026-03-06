@@ -1,12 +1,16 @@
-import { neon } from '@neondatabase/serverless'
-import { cookies } from 'next/headers'
+import { getDb } from '@/lib/db'
+import { setSession } from '@/lib/session'
+import { customerLoginSchema } from '@/lib/validations'
 import { NextRequest, NextResponse } from 'next/server'
 
-const sql = neon(process.env.DATABASE_URL!)
+const sql = getDb()
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, phone } = await req.json()
+    if (process.env.DEMO_MODE !== 'true') return NextResponse.json({ errors: { general: 'Customer sign-in requires a verified identity provider before production use' } }, { status: 503 })
+    const parsed = customerLoginSchema.safeParse(await req.json().catch(() => null))
+    if (!parsed.success) return NextResponse.json({ errors: Object.fromEntries(parsed.error.issues.map(i => [String(i.path[0]), i.message])) }, { status: 400 })
+    const { email, phone } = parsed.data
 
     // Validation
     if (!email || !phone) {
@@ -37,7 +41,7 @@ export async function POST(req: NextRequest) {
     const result = await sql`
       SELECT id, first_name, last_name, email, phone, subscription_plan, subscription_status
       FROM customers
-      WHERE LOWER(email) = LOWER(${email}) AND phone = ${phoneDigits}
+      WHERE LOWER(email) = LOWER(${email.trim()}) AND phone = ${phoneDigits}
       LIMIT 1
     `
 
@@ -68,14 +72,7 @@ export async function POST(req: NextRequest) {
       loginTime: new Date().toISOString(),
     }
 
-    const cookieStore = await cookies()
-    cookieStore.set('customer_session', JSON.stringify(customerSessionData), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: '/',
-    })
+    await setSession(Number(customer.id), 'customer')
 
     return NextResponse.json({
       success: true,
@@ -84,7 +81,7 @@ export async function POST(req: NextRequest) {
       plan: customer.subscription_plan,
     })
   } catch (error) {
-    console.error('[v0] Customer login error:', error)
+    console.error('[portal] Customer login error:', error)
     return NextResponse.json(
       { errors: { general: 'An error occurred during login' } },
       { status: 500 }

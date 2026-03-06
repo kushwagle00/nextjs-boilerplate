@@ -1,25 +1,24 @@
-import { neon } from '@neondatabase/serverless'
-import { cookies } from 'next/headers'
+import { getDb } from '@/lib/db'
+import { getAgentSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
 
-const sql = neon(process.env.DATABASE_URL!)
+const sql = getDb()
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('agent_session')
+    const session = await getAgentSession()
 
-    if (!sessionCookie?.value) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const { id } = await params
-    const customerId = parseInt(id)
+    const customerId = Number(id)
 
-    if (isNaN(customerId)) {
+    if ((!Number.isSafeInteger(customerId) || customerId < 1)) {
       return NextResponse.json({ error: 'Invalid customer ID' }, { status: 400 })
     }
 

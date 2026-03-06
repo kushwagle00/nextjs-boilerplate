@@ -1,25 +1,26 @@
-import { neon } from '@neondatabase/serverless'
-import { cookies } from 'next/headers'
+import { getDb } from '@/lib/db'
+import { getCustomerSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
 
-const sql = neon(process.env.DATABASE_URL!)
+const sql = getDb()
 
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string; deviceId: string }> }
 ) {
   try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('customer_session')
+    const session = await getCustomerSession()
 
-    if (!sessionCookie?.value) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const session = JSON.parse(sessionCookie.value)
     const { id, deviceId: deviceIdParam } = await params
-    const customerId = parseInt(id)
-    const deviceId = parseInt(deviceIdParam)
+    const customerId = Number(id)
+    const deviceId = Number(deviceIdParam)
+    if (!Number.isSafeInteger(customerId) || customerId < 1 || !Number.isSafeInteger(deviceId) || deviceId < 1) {
+      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+    }
 
     if (session.customerId !== customerId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -40,7 +41,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('[v0] Delete device error:', error)
+    console.error('[portal] Delete device error:', error)
     return NextResponse.json(
       { error: 'An error occurred' },
       { status: 500 }

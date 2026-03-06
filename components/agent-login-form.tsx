@@ -13,6 +13,7 @@ export function AgentLoginForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,7 +37,7 @@ export function AgentLoginForm() {
       const response = await fetch('/api/auth/agent-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, password }),
       })
 
       const result = await response.json()
@@ -49,7 +50,7 @@ export function AgentLoginForm() {
       toast.success(`Logged in as agent (${email})`)
       router.push('/dashboard')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('An error occurred during login')
     } finally {
       setIsLoading(false)
@@ -60,7 +61,7 @@ export function AgentLoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Agent Portal</CardTitle>
-        <CardDescription>Enter your email to access the agent dashboard</CardDescription>
+        <CardDescription>Sign in with your provisioned agent account</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">
@@ -94,6 +95,13 @@ export function AgentLoginForm() {
             )}
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" autoComplete="current-password" required
+              value={password} onChange={e => setPassword(e.target.value)} disabled={isLoading}
+              aria-invalid={!!errors.password} aria-describedby={errors.password ? 'password-error' : undefined} />
+            {errors.password && <p id="password-error" className="text-sm text-destructive">{errors.password}</p>}
+          </div>
           <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
             Sign In
@@ -101,7 +109,7 @@ export function AgentLoginForm() {
         </form>
 
         <div className="mt-4 text-sm text-muted-foreground text-center">
-          <p>Use any valid email address to sign in</p>
+          <p>Contact your administrator for an agent account</p>
         </div>
       </CardContent>
     </Card>

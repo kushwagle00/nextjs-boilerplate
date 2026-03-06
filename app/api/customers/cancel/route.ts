@@ -1,35 +1,11 @@
-import { neon } from '@neondatabase/serverless'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
+import { getAgentSession } from '@/lib/session'
+import { POST as cancel } from '../[id]/cancel/route'
 
 export async function POST(req: NextRequest) {
-  try {
-    const { id, reason } = await req.json()
-
-    if (!id || !['customer', 'agent'].includes(reason)) {
-      return NextResponse.json(
-        { message: 'Invalid request' },
-        { status: 400 }
-      )
-    }
-
-    // Update customer status
-    await sql`
-      UPDATE customers
-      SET is_active = false, status = 'cancelled', cancellation_reason = ${reason}, cancelled_at = NOW()
-      WHERE id = ${id}
-    `
-
-    return NextResponse.json({
-      success: true,
-      message: 'Subscription cancelled',
-    })
-  } catch (error) {
-    console.error('[v0] Cancel subscription error:', error)
-    return NextResponse.json(
-      { message: 'An error occurred' },
-      { status: 500 }
-    )
-  }
+  if (!await getAgentSession()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const body = await req.clone().json().catch(() => null)
+  if (!Number.isSafeInteger(body?.id) || body.id < 1)
+    return NextResponse.json({ error: 'Invalid customer ID' }, { status: 400 })
+  return cancel(req, { params: Promise.resolve({ id: String(body.id) }) })
 }

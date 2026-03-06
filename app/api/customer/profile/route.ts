@@ -1,22 +1,20 @@
-import { neon } from '@neondatabase/serverless'
-import { cookies } from 'next/headers'
+import { getDb } from '@/lib/db'
+import { getCustomerSession } from '@/lib/session'
 import { NextResponse } from 'next/server'
 
-const sql = neon(process.env.DATABASE_URL!)
+const sql = getDb()
 
 export async function GET() {
   try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('customer_session')
+    const session = await getCustomerSession()
 
-    if (!sessionCookie?.value) {
+    if (!session) {
       return NextResponse.json(
         { message: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    const session = JSON.parse(sessionCookie.value)
     const customerId = session.customerId
 
     // Get customer with devices
@@ -64,7 +62,7 @@ export async function GET() {
       },
     })
   } catch (error) {
-    console.error('[v0] Get customer profile error:', error)
+    console.error('[portal] Get customer profile error:', error)
     return NextResponse.json(
       { message: 'An error occurred' },
       { status: 500 }
