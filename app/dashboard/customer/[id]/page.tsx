@@ -82,16 +82,14 @@ export default function CustomerDetailPage() {
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [cancelingDevice, setCancelingDevice] = useState(false)
 
-  // Show success toast once after enrollment redirect
+  // Show success toast exactly once after enrollment redirect
   useEffect(() => {
     if (searchParams.get('enrolled') === '1') {
       toast.success('Customer enrolled successfully!')
-      // Remove the query param without re-rendering by replacing state
-      const url = new URL(window.location.href)
-      url.searchParams.delete('enrolled')
-      window.history.replaceState({}, '', url.toString())
+      router.replace(`/dashboard/customer/${params.id}`)
     }
-  }, [searchParams])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     async function fetchCustomer() {
