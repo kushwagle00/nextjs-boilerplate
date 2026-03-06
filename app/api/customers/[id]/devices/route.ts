@@ -108,7 +108,7 @@ export async function POST(
     const deviceCountResult = await sql`
       SELECT COUNT(*) as count
       FROM devices
-      WHERE customer_id = ${customerId} AND type = ${type}
+      WHERE customer_id = ${customerId} AND device_type = ${type}
     `
 
     const deviceCount = parseInt(deviceCountResult[0]?.count || '0')
@@ -124,8 +124,8 @@ export async function POST(
     // Add device
     const result = await sql`
       INSERT INTO devices (
-        customer_id, type, device_name, brand, model,
-        imei, serial_number, color, purchase_date
+        customer_id, device_type, device_name, brand, model,
+        imei, serial_number, color, purchased_date
       ) VALUES (
         ${customerId}, ${type}, ${deviceName}, ${brand}, ${model},
         ${imei || null}, ${serialNumber || null}, ${color || null}, ${purchaseDate}

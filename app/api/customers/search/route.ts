@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       SELECT 
         id, first_name, last_name, email, phone,
         city, state,
-        subscription_plan, is_active, created_at
+        subscription_plan, subscription_status, created_at
       FROM customers
       WHERE 
         LOWER(first_name) LIKE LOWER(${searchTerm})

@@ -22,9 +22,10 @@ interface Customer {
   state: string
   zip_code: string
   subscription_plan: string
+  subscription_price?: number
+  subscription_status: string
   card_last_four: string
   card_expiry: string
-  is_active: boolean
   created_at: string
 }
 
@@ -117,10 +118,10 @@ export default function CustomerDetailPage() {
           </p>
         </div>
         <Badge
-          variant={customer.is_active ? 'default' : 'destructive'}
-          className={customer.is_active ? 'bg-success text-success-foreground' : ''}
+          variant={customer.subscription_status === 'active' ? 'default' : 'destructive'}
+          className={customer.subscription_status === 'active' ? 'bg-success text-success-foreground' : ''}
         >
-          {customer.is_active ? 'Active' : 'Cancelled'}
+          {customer.subscription_status === 'active' ? 'Active' : 'Cancelled'}
         </Badge>
       </div>
 
@@ -178,7 +179,7 @@ export default function CustomerDetailPage() {
               label="Price"
               value={planPrices[customer.subscription_plan] || 'N/A'}
             />
-            <DetailField label="Status" value={customer.is_active ? 'Active' : 'Cancelled'} />
+            <DetailField label="Status" value={customer.subscription_status === 'active' ? 'Active' : 'Cancelled'} />
           </CardContent>
         </Card>
 
