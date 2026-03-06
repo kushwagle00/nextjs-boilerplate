@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import {
   ArrowLeft, User, MapPin, CreditCard, Calendar, Shield, Mail, Phone,
   Smartphone, Tablet, Laptop, Speaker, Trash2, AlertTriangle, Package,
@@ -72,6 +72,7 @@ const deviceTypeLabels: Record<string, string> = {
 export default function CustomerDetailPage() {
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [devices, setDevices] = useState<Device[]>([])
   const [loading, setLoading] = useState(true)
@@ -80,6 +81,17 @@ export default function CustomerDetailPage() {
   const [cancelDeviceDialog, setCancelDeviceDialog] = useState(false)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [cancelingDevice, setCancelingDevice] = useState(false)
+
+  // Show success toast once after enrollment redirect
+  useEffect(() => {
+    if (searchParams.get('enrolled') === '1') {
+      toast.success('Customer enrolled successfully!')
+      // Remove the query param without re-rendering by replacing state
+      const url = new URL(window.location.href)
+      url.searchParams.delete('enrolled')
+      window.history.replaceState({}, '', url.toString())
+    }
+  }, [searchParams])
 
   useEffect(() => {
     async function fetchCustomer() {

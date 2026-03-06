@@ -207,8 +207,7 @@ export default function EnrollPage() {
         return
       }
 
-      toast.success('Customer enrolled successfully!')
-      router.push(`/dashboard/customer/${result.customerId}`)
+      router.push(`/dashboard/customer/${result.customerId}?enrolled=1`)
     } catch {
       toast.error('An unexpected error occurred. Please try again.')
       setLoading(false)
