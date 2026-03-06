@@ -533,7 +533,7 @@ export default function EnrollPage() {
                     id="cardNumber"
                     value={form.cardNumber}
                     onChange={(e) => updateField('cardNumber', formatCardNumber(e.target.value))}
-                    placeholder="4242 4242 4242 4242"
+                    placeholder="•••• •••• •••• ••••"
                     className="pl-9"
                     maxLength={19}
                     autoComplete="off"
@@ -585,7 +585,7 @@ export default function EnrollPage() {
               <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-2">
                 <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">
-                  {'For testing: CVV 101 = approved, CVV 010 = declined'}
+                  Your payment information is encrypted and stored securely.
                 </span>
               </div>
             </CardContent>
