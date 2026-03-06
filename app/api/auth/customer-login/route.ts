@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Find customer by email and phone (phone stored as 10 digits)
-    const phoneDigits = phone.replace(/\D/g, '')
     const result = await sql`
       SELECT id, first_name, last_name, email, phone, subscription_plan, subscription_status
       FROM customers
