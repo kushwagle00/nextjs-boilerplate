@@ -82,14 +82,12 @@ export default function CustomerDetailPage() {
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [cancelingDevice, setCancelingDevice] = useState(false)
 
-  const enrolledToastShown = useRef(false)
+  const enrolledParamCleaned = useRef(false)
 
-  // Show success toast exactly once after enrollment redirect
+  // Clean up the ?enrolled=1 param silently (no toast needed - the page itself is the confirmation)
   useEffect(() => {
-    if (searchParams.get('enrolled') === '1' && !enrolledToastShown.current) {
-      enrolledToastShown.current = true
-      toast.success('Customer enrolled successfully!')
-      // Clean up the URL param
+    if (searchParams.get('enrolled') === '1' && !enrolledParamCleaned.current) {
+      enrolledParamCleaned.current = true
       router.replace(`/dashboard/customer/${params.id}`, { scroll: false })
     }
   }, [searchParams, params.id, router])
