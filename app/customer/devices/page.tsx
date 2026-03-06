@@ -18,7 +18,7 @@ interface Device {
   imei?: string
   serial_number?: string
   color?: string
-  purchase_date: string
+  purchased_date?: string
   created_at: string
 }
 
@@ -202,7 +202,9 @@ export default function CustomerDevicesPage() {
                   )}
                   <p>
                     <span className="text-muted-foreground">Purchase Date:</span>{' '}
-                    {new Date(device.purchase_date).toLocaleDateString()}
+                    {device.purchased_date
+                      ? new Date(device.purchased_date + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                      : 'N/A'}
                   </p>
                 </div>
               </CardContent>
