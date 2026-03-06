@@ -52,7 +52,10 @@ export const enrollmentSchema = z.object({
   phone: z
     .string()
     .min(1, 'Phone number is required')
-    .regex(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
+    .refine(
+      (val) => val.replace(/\D/g, '').length === 10,
+      'Phone number must be exactly 10 digits'
+    ),
   addressLine1: z
     .string()
     .min(1, 'Street address is required')
@@ -108,7 +111,10 @@ export const customerLoginSchema = z.object({
   phone: z
     .string()
     .min(1, 'Phone number is required')
-    .regex(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
+    .refine(
+      (val) => val.replace(/\D/g, '').length === 10,
+      'Phone number must be exactly 10 digits'
+    ),
 })
 
 export const planSchema = z.object({
