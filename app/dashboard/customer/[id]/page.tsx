@@ -96,9 +96,9 @@ export default function CustomerDetailPage() {
     gadget_phone_plan: '$19.99/mo',
   }
 
-  function formatPhoneForDisplay(phone: string): string {
-    const digits = phone.replace(/\D/g, '')
-    if (digits.length !== 10) return phone
+  function formatPhoneForDisplay(phone: string) {
+    const digits = phone.replace(/\D/g, '').slice(0, 10)
+    if (digits.length < 10) return phone   // incomplete input
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
   }
 
