@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import {
   ArrowLeft, User, MapPin, CreditCard, Calendar, Shield, Mail, Phone,
@@ -82,14 +82,17 @@ export default function CustomerDetailPage() {
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [cancelingDevice, setCancelingDevice] = useState(false)
 
+  const enrolledToastShown = useRef(false)
+
   // Show success toast exactly once after enrollment redirect
   useEffect(() => {
-    if (searchParams.get('enrolled') === '1') {
+    if (searchParams.get('enrolled') === '1' && !enrolledToastShown.current) {
+      enrolledToastShown.current = true
       toast.success('Customer enrolled successfully!')
-      router.replace(`/dashboard/customer/${params.id}`)
+      // Clean up the URL param
+      router.replace(`/dashboard/customer/${params.id}`, { scroll: false })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams, params.id, router])
 
   useEffect(() => {
     async function fetchCustomer() {
