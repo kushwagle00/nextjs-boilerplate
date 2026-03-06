@@ -6,7 +6,7 @@ const sql = neon(process.env.DATABASE_URL!)
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string; deviceId: string } }
+  { params }: { params: Promise<{ id: string; deviceId: string }> }
 ) {
   try {
     const cookieStore = await cookies()
@@ -17,8 +17,9 @@ export async function DELETE(
     }
 
     const session = JSON.parse(sessionCookie.value)
-    const customerId = parseInt(params.id)
-    const deviceId = parseInt(params.deviceId)
+    const { id, deviceId: deviceIdParam } = await params
+    const customerId = parseInt(id)
+    const deviceId = parseInt(deviceIdParam)
 
     if (session.customerId !== customerId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })

@@ -6,7 +6,7 @@ const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies()
@@ -17,7 +17,8 @@ export async function GET(
     }
 
     const session = JSON.parse(sessionCookie.value)
-    const customerId = parseInt(params.id)
+    const { id } = await params
+    const customerId = parseInt(id)
 
     // Verify the logged-in customer owns this profile
     if (session.customerId !== customerId) {
@@ -62,7 +63,7 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies()
@@ -73,7 +74,8 @@ export async function POST(
     }
 
     const session = JSON.parse(sessionCookie.value)
-    const customerId = parseInt(params.id)
+    const { id } = await params
+    const customerId = parseInt(id)
 
     if (session.customerId !== customerId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
