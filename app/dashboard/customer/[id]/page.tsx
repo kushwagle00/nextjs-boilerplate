@@ -198,15 +198,18 @@ export default function CustomerDetailPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon-sm" onClick={() => router.push('/dashboard')}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div className="flex flex-1 flex-col gap-0.5">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground text-balance">
-            {customer.first_name} {customer.last_name}
-          </h1>
-          <p className="text-sm text-muted-foreground">Customer ID: {customer.id}</p>
+      {/* Top Navigation Bar */}
+      <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon-sm" onClick={() => router.push('/dashboard')}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex flex-1 flex-col gap-0.5">
+            <h1 className="text-xl font-bold tracking-tight text-foreground">
+              {customer.first_name} {customer.last_name}
+            </h1>
+            <p className="text-xs text-muted-foreground">Customer ID: {customer.id}</p>
+          </div>
         </div>
         <Badge
           variant={customer.subscription_status === 'active' ? 'default' : 'destructive'}
@@ -296,16 +299,18 @@ export default function CustomerDetailPage() {
       {/* Enrolled Devices */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Package className="h-4 w-4 text-primary" />
-              Enrolled Devices
-              {devices.length > 0 && (
-                <Badge variant="secondary" className="ml-1">{devices.length}</Badge>
-              )}
-            </CardTitle>
-            {devices.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
+                <Package className="h-4 w-4 text-primary" />
+                <CardTitle className="text-base">Enrolled Devices</CardTitle>
+                {devices.length > 0 && (
+                  <Badge variant="secondary" className="ml-1">{devices.length}</Badge>
+                )}
+              </div>
+            </div>
+            {devices.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
                 {Object.entries(deviceSummary).map(([type, count]) => (
                   <span
                     key={type}
