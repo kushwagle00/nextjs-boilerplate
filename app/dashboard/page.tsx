@@ -92,7 +92,7 @@ export default function DashboardPage() {
         return
       }
 
-      toast.success('Subscription cancelled successfully')
+      // Dismiss any active toasts and close dialog silently (state change is confirmation)
       setCancelDialogOpen(false)
       setCancelReason('')
       setSelectedCustomer(null)
