@@ -2,12 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { neon } from '@neondatabase/serverless'
 import { Plus, Smartphone, Tablet, Laptop, Headphones, Watch, Camera, Volume2 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { toast } from 'sonner'
 
 interface Device {
   id: number
@@ -90,10 +88,8 @@ export default function CustomerDevicesPage() {
     )
   }
 
-  const canAddPhones = true
+  const canAddPhones = customer.subscription_plan !== 'phone_plan' || !customer.devices.some(d => d.device_type === 'phone')
   const canAddGadgets = customer.subscription_plan === 'gadget_phone_plan'
-  const phoneCount = customer.devices?.filter(d => d.device_type === 'phone').length || 0
-  const gadgetCount = customer.devices?.filter(d => d.device_type !== 'phone').length || 0
 
   return (
     <div className="flex flex-col gap-6">
@@ -121,7 +117,7 @@ export default function CustomerDevicesPage() {
             </p>
             <p className="text-sm text-muted-foreground">
               {customer.subscription_plan === 'phone_plan'
-                ? 'You can add phones to your coverage'
+                ? 'Your plan includes one phone'
                 : 'You can add phones and gadgets to your coverage'}
             </p>
           </div>
@@ -203,7 +199,7 @@ export default function CustomerDevicesPage() {
                   <p>
                     <span className="text-muted-foreground">Purchase Date:</span>{' '}
                     {device.purchased_date
-                      ? new Date(device.purchased_date + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                      ? new Date(String(device.purchased_date).slice(0, 10) + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
                       : 'N/A'}
                   </p>
                 </div>

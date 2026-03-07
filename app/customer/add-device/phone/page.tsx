@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { devicePhoneSchema, type DevicePhoneFormData } from '@/lib/validations'
+import { type DevicePhoneFormData } from '@/lib/validations'
 
 export default function AddPhonePage() {
   const router = useRouter()
@@ -22,7 +22,7 @@ export default function AddPhonePage() {
     color: '',
     purchaseDate: '',
   })
-  const [touched, setTouched] = useState<Set<keyof DevicePhoneFormData>>(new Set())
+  const [, setTouched] = useState<Set<keyof DevicePhoneFormData>>(new Set())
 
   function handleFieldChange(field: keyof DevicePhoneFormData, value: string) {
     setForm(prev => ({ ...prev, [field]: value }))

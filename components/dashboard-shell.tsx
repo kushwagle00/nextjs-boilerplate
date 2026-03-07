@@ -61,6 +61,7 @@ export function DashboardShell({
                 return (
                   <Button
                     key={item.href}
+                    aria-label={item.label}
                     variant={isActive ? 'secondary' : 'ghost'}
                     size="sm"
                     onClick={() => router.push(item.href)}

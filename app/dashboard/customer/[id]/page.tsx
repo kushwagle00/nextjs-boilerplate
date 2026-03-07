@@ -414,7 +414,7 @@ export default function CustomerDetailPage() {
                 <p className="text-sm text-muted-foreground">
                   Are you sure you want to remove{' '}
                   <strong className="text-foreground">{selectedDevice?.device_name}</strong>{' '}
-                  ({selectedDevice?.brand} {selectedDevice?.model}) from this customer's account?
+                  ({selectedDevice?.brand} {selectedDevice?.model}) from this customer&apos;s account?
                   This action cannot be undone.
                 </p>
                 {selectedDevice?.imei && (

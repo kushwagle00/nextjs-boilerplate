@@ -1,15 +1,11 @@
 import type { Metadata } from 'next'
-import { Inter, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import './globals.css'
 
-const _inter = Inter({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Agent Portal - Customer Enrollment',
-  description: 'Secure agent portal for customer enrollment and management',
+  title: 'Device Protection Portal | Demo',
+  description: 'Device protection enrollment and device management demonstration',
 }
 
 export default function RootLayout({
@@ -20,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
+        <div className="border-b bg-amber-50 px-4 py-2 text-center text-sm text-amber-950">
+          Demonstration only · Use synthetic customer data · No real payments or coverage
+        </div>
         {children}
         <Toaster position="top-right" richColors />
-        <Analytics />
       </body>
     </html>
   )

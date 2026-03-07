@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { toast } from 'sonner'
-import { deviceGadgetSchema, type DeviceGadgetFormData } from '@/lib/validations'
+import { type DeviceGadgetFormData } from '@/lib/validations'
 
 const GADGET_TYPES = [
   { value: 'laptop', label: 'Laptop' },
@@ -41,7 +41,7 @@ export default function AddGadgetPage() {
     color: '',
     purchaseDate: '',
   })
-  const [touched, setTouched] = useState<Set<keyof FormData>>(new Set())
+  const [, setTouched] = useState<Set<keyof FormData>>(new Set())
 
   function handleFieldChange(field: keyof FormData, value: string) {
     setForm(prev => ({ ...prev, [field]: value }))

@@ -143,7 +143,7 @@ export default function EnrollPage() {
         newErrors.cardExpiry = 'Please enter a valid expiration date (MM/YY)'
       else {
         const [month, year] = form.cardExpiry.split('/')
-        const expiry = new Date(2000 + parseInt(year), parseInt(month) - 1)
+        const expiry = new Date(2000 + parseInt(year), parseInt(month))
         if (expiry <= new Date()) newErrors.cardExpiry = 'Card has expired'
       }
       if (!form.cardCvv.trim()) newErrors.cardCvv = 'CVV is required'
@@ -499,7 +499,7 @@ export default function EnrollPage() {
                 <Lock className="h-4 w-4 text-muted-foreground" />
               </div>
               <CardDescription>
-                Card details are processed securely. We do not store full card numbers (PCI DSS compliant).
+                Demo payments only. Use test card 4242 4242 4242 4242 with a future expiry. Never enter real payment details.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
@@ -584,7 +584,7 @@ export default function EnrollPage() {
               <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-2">
                 <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">
-                  Your payment information is encrypted and stored securely.
+                  No payment is charged. CVV 101 approves the demo; CVV 010 declines it.
                 </span>
               </div>
             </CardContent>

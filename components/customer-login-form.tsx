@@ -48,7 +48,7 @@ export function CustomerLoginForm() {
       toast.success('Login successful')
       router.push('/customer/devices')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('An error occurred during login')
     } finally {
       setIsLoading(false)

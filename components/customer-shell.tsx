@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, usePathname } from 'next/navigation'
-import { LogOut, Smartphone, Home } from 'lucide-react'
+import { LogOut, Smartphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import Link from 'next/link'
@@ -16,7 +16,7 @@ export function CustomerShell({ children }: { children: React.ReactNode }) {
       toast.success('Logged out successfully')
       router.push('/')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('Failed to logout')
     }
   }
