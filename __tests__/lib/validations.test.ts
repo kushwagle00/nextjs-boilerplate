@@ -15,7 +15,7 @@ describe('Validations', () => {
         zipCode: '10001',
         subscriptionPlan: 'phone_plan',
         cardNumber: '1234 5678 9012 3456',
-        cardExpiry: '12/25',
+        cardExpiry: '12/' + String(new Date().getFullYear() + 2).slice(-2),
         cardCvv: '101',
         cardholderName: 'John Doe',
       }
@@ -37,7 +37,7 @@ describe('Validations', () => {
         zipCode: '90001',
         subscriptionPlan: 'gadget_phone_plan',
         cardNumber: '9876 5432 1098 7654',
-        cardExpiry: '06/26',
+        cardExpiry: '06/' + String(new Date().getFullYear() + 2).slice(-2),
         cardCvv: '456',
         cardholderName: 'Jane Smith',
       }

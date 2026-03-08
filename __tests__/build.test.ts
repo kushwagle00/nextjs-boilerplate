@@ -59,7 +59,7 @@ describe('Build Verification', () => {
         zipCode: '12345',
         subscriptionPlan: 'phone_plan',
         cardNumber: '1234 5678 9012 3456',
-        cardExpiry: '12/25',
+        cardExpiry: '12/' + String(new Date().getFullYear() + 2).slice(-2),
         cardCvv: '123',
         cardholderName: 'Test User',
       })
