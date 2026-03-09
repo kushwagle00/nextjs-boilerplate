@@ -1,3 +1,5 @@
+> Historical notes: the current setup, authentication, and demo payment behavior are documented in [README.md](README.md). These older instructions are superseded.
+
 # Phone Validation Fix & Testing Implementation
 
 ## Problem Statement

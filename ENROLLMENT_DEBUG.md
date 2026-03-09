@@ -1,3 +1,5 @@
+> Historical notes: the current setup, authentication, and demo payment behavior are documented in [README.md](README.md). These older instructions are superseded.
+
 # Enrollment Form Debugging Guide
 
 ## What I Fixed
@@ -162,4 +164,3 @@ Run these in the browser console to test specific validations:
 // Test if zipcode validation works
 /^\d{5}(-\d{4})?$/.test('62701')  // Should return true
 ```
-

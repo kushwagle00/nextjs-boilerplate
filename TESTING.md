@@ -1,3 +1,5 @@
+> Historical notes: the current setup, authentication, and demo payment behavior are documented in [README.md](README.md). These older instructions are superseded.
+
 # Testing Guide
 
 This document describes how to run tests for the Agent Portal & Customer Device Management System.
